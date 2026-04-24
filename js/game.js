@@ -40,8 +40,14 @@ class Game {
         this.p1PowerEl = document.getElementById('p1-power');
         this.p2BombsEl = document.getElementById('p2-bombs');
         this.p2PowerEl = document.getElementById('p2-power');
+        this.controlLabels = {
+            1: document.getElementById('p1-controls'),
+            2: document.getElementById('p2-controls')
+        };
         
         this.initializeEventListeners();
+        this.initializeCommandEditors();
+        this.updateControlLabels();
     }
 
     /**
@@ -58,6 +64,8 @@ class Game {
         
         // Global key listeners for game control
         document.addEventListener('keydown', (e) => {
+            if (ControlConfig.isEditorEvent(e) || ControlConfig.activeCapture) return;
+
             const key = e.key.toLowerCase();
 
             if (key.length === 1 && /^[a-z]$/.test(key)) {
@@ -88,6 +96,137 @@ class Game {
                     break;
             }
         });
+    }
+
+    /**
+     * Build the per-player command editors in the player boxes.
+     */
+    initializeCommandEditors() {
+        document.querySelectorAll('.edit-commands-button').forEach((button) => {
+            button.addEventListener('click', () => {
+                const playerType = button.dataset.player;
+                const editor = document.getElementById(`p${playerType}-command-editor`);
+                const isOpening = editor.classList.contains('hidden');
+                ControlConfig.activeCapture = null;
+
+                document.querySelectorAll('.command-editor').forEach((panel) => {
+                    panel.classList.toggle('hidden', panel !== editor || !isOpening);
+                });
+
+                document.querySelectorAll('.edit-commands-button').forEach((editorButton) => {
+                    editorButton.textContent = editorButton === button && isOpening
+                        ? 'Close commands'
+                        : 'Edit commands';
+                });
+
+                this.renderCommandEditor(playerType);
+            });
+        });
+    }
+
+    renderCommandEditor(playerType) {
+        const editor = document.getElementById(`p${playerType}-command-editor`);
+        editor.innerHTML = '';
+
+        const commandList = document.createElement('div');
+        commandList.className = 'command-list';
+
+        for (const action of ControlConfig.actions) {
+            commandList.appendChild(this.createCommandRow(playerType, action));
+        }
+
+        const footer = document.createElement('div');
+        footer.className = 'command-editor-footer';
+
+        const resetButton = document.createElement('button');
+        resetButton.type = 'button';
+        resetButton.className = 'secondary-command-button';
+        resetButton.textContent = 'Reset player defaults';
+        resetButton.addEventListener('click', () => {
+            ControlConfig.resetPlayer(playerType);
+            this.inputHandler?.reset();
+            this.updateControlLabels();
+            this.renderCommandEditor(playerType);
+        });
+
+        footer.appendChild(resetButton);
+        editor.appendChild(commandList);
+        editor.appendChild(footer);
+    }
+
+    createCommandRow(playerType, action) {
+        const row = document.createElement('div');
+        row.className = 'command-row';
+
+        const label = document.createElement('label');
+        label.textContent = action.label;
+        label.setAttribute('for', `p${playerType}-${action.id}-manual`);
+
+        const captureButton = document.createElement('button');
+        captureButton.type = 'button';
+        captureButton.className = 'command-key-button';
+        captureButton.textContent = ControlConfig.formatKeyCode(ControlConfig.getBinding(playerType, action.id));
+        captureButton.addEventListener('click', () => {
+            ControlConfig.activeCapture = { playerType, actionId: action.id };
+            captureButton.textContent = 'Press key...';
+            captureButton.classList.add('capturing');
+            captureButton.focus();
+        });
+
+        captureButton.addEventListener('keydown', (event) => {
+            if (!ControlConfig.activeCapture) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+            this.setCommandBinding(playerType, action.id, event.code);
+        });
+
+        const manualInput = document.createElement('input');
+        manualInput.id = `p${playerType}-${action.id}-manual`;
+        manualInput.type = 'text';
+        manualInput.value = ControlConfig.getBinding(playerType, action.id);
+        manualInput.placeholder = 'KeyW';
+        manualInput.spellcheck = false;
+
+        const setButton = document.createElement('button');
+        setButton.type = 'button';
+        setButton.className = 'secondary-command-button';
+        setButton.textContent = 'Set';
+        setButton.addEventListener('click', () => {
+            this.setCommandBinding(playerType, action.id, manualInput.value);
+        });
+
+        manualInput.addEventListener('keydown', (event) => {
+            event.stopPropagation();
+            if (event.key === 'Enter') {
+                this.setCommandBinding(playerType, action.id, manualInput.value);
+            }
+        });
+
+        row.appendChild(label);
+        row.appendChild(captureButton);
+        row.appendChild(manualInput);
+        row.appendChild(setButton);
+
+        return row;
+    }
+
+    setCommandBinding(playerType, actionId, keyCode) {
+        const saved = ControlConfig.setBinding(playerType, actionId, keyCode);
+        ControlConfig.activeCapture = null;
+
+        if (saved) {
+            this.inputHandler?.reset();
+            this.updateControlLabels();
+        }
+
+        this.renderCommandEditor(playerType);
+    }
+
+    updateControlLabels() {
+        for (const playerType of Object.keys(this.controlLabels)) {
+            this.controlLabels[playerType].textContent = ControlConfig.getPlayerSummary(playerType);
+        }
     }
 
     /**

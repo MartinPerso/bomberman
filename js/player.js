@@ -104,25 +104,7 @@ class Player {
      * @returns {Object} Input state
      */
     getPlayerInput(keyStates) {
-        if (this.type === 1) {
-            return {
-                up: keyStates['KeyW'],
-                down: keyStates['KeyS'],
-                left: keyStates['KeyA'],
-                right: keyStates['KeyD'],
-                bomb: keyStates['ShiftLeft'],
-                detonate: keyStates['ControlLeft']
-            };
-        } else {
-            return {
-                up: keyStates['ArrowUp'],
-                down: keyStates['ArrowDown'],
-                left: keyStates['ArrowLeft'],
-                right: keyStates['ArrowRight'],
-                bomb: keyStates['KeyO'],
-                detonate: keyStates['KeyP']
-            };
-        }
+        return ControlConfig.getPlayerInput(this.type, keyStates);
     }
 
     /**

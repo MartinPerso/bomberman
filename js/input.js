@@ -14,16 +14,12 @@ class InputHandler {
      */
     initializeEventListeners() {
         document.addEventListener('keydown', (e) => {
+            if (ControlConfig.isEditorEvent(e)) return;
+
             this.keyStates[e.code] = true;
             
             // Prevent default behavior for game keys to avoid page scrolling
-            const gameKeys = [
-                'KeyW', 'KeyA', 'KeyS', 'KeyD', // Player 1 movement
-                'ShiftLeft', 'ControlLeft',      // Player 1 actions
-                'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', // Player 2 movement
-                'KeyO', 'KeyP',                  // Player 2 actions
-                'KeyM', 'KeyR'                   // Game control
-            ];
+            const gameKeys = ControlConfig.getPreventedKeyCodes();
             
             if (gameKeys.includes(e.code)) {
                 e.preventDefault();
@@ -31,6 +27,8 @@ class InputHandler {
         });
 
         document.addEventListener('keyup', (e) => {
+            if (ControlConfig.isEditorEvent(e)) return;
+
             this.keyStates[e.code] = false;
         });
 
@@ -62,14 +60,7 @@ class InputHandler {
      * @returns {Object} Movement state for Player 1
      */
     getPlayer1Input() {
-        return {
-            up: this.isKeyPressed('KeyW'),
-            down: this.isKeyPressed('KeyS'),
-            left: this.isKeyPressed('KeyA'),
-            right: this.isKeyPressed('KeyD'),
-            bomb: this.isKeyPressed('ShiftLeft'),
-            detonate: this.isKeyPressed('ControlLeft')
-        };
+        return ControlConfig.getPlayerInput(1, this.keyStates);
     }
 
     /**
@@ -77,14 +68,7 @@ class InputHandler {
      * @returns {Object} Movement state for Player 2
      */
     getPlayer2Input() {
-        return {
-            up: this.isKeyPressed('ArrowUp'),
-            down: this.isKeyPressed('ArrowDown'),
-            left: this.isKeyPressed('ArrowLeft'),
-            right: this.isKeyPressed('ArrowRight'),
-            bomb: this.isKeyPressed('KeyO'),
-            detonate: this.isKeyPressed('KeyP')
-        };
+        return ControlConfig.getPlayerInput(2, this.keyStates);
     }
 
     /**

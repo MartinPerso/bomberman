@@ -36,6 +36,10 @@ class Player {
         this.collisionWidth = 18;
         this.collisionHeight = 15;
         this.collisionOffsetY = 10;
+
+        // Player 3 uses a 32px-wide third-party sprite, centered on the same hitbox.
+        this.renderOffsetX = this.type === 3 ? -6 : 0;
+        this.renderOffsetY = 0;
     }
 
     /**
@@ -464,8 +468,8 @@ class Player {
         return {
             direction: this.currentDirection,
             frame: this.currentFrame,
-            x: this.x,
-            y: this.y,
+            x: this.x + this.renderOffsetX,
+            y: this.y + this.renderOffsetY,
             type: this.type
         };
     }

@@ -14,7 +14,7 @@ class InputHandler {
      */
     initializeEventListeners() {
         document.addEventListener('keydown', (e) => {
-            if (ControlConfig.isEditorEvent(e)) return;
+            if (ControlConfig.isEditorEvent(e) || ControlConfig.isToggleActivationEvent(e)) return;
 
             this.keyStates[e.code] = true;
             
@@ -27,7 +27,7 @@ class InputHandler {
         });
 
         document.addEventListener('keyup', (e) => {
-            if (ControlConfig.isEditorEvent(e)) return;
+            if (ControlConfig.isEditorEvent(e) || ControlConfig.isToggleActivationEvent(e)) return;
 
             this.keyStates[e.code] = false;
         });

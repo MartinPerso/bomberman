@@ -41,14 +41,13 @@ body {
 }
 
 .player-stats {
-    display: flex;
-    justify-content: space-between;
-    width: 544px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: min(820px, 100%);
     gap: 20px;
 }
 
-.player-1-stats, .player-2-stats {
-    flex: 1;
+.player-1-stats, .player-2-stats, .player-3-stats {
     background: #3a3a3a;
     padding: 15px;
     border-radius: 8px;
@@ -63,12 +62,45 @@ body {
     border-color: #e24a4a;
 }
 
+.player-3-stats {
+    border-color: #57c776;
+}
+
+.player-3-stats.disabled {
+    opacity: 0.62;
+}
+
 .player-1-stats h3 {
     color: #4a90e2;
 }
 
 .player-2-stats h3 {
     color: #e24a4a;
+}
+
+.player-3-stats h3 {
+    color: #57c776;
+}
+
+.optional-player-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.player-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #ddd;
+    cursor: pointer;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.player-toggle input {
+    accent-color: #57c776;
 }
 
 .stats {
@@ -129,7 +161,7 @@ body {
 
 .command-row {
     display: grid;
-    grid-template-columns: 70px minmax(86px, 1fr) minmax(72px, 1fr) 48px;
+    grid-template-columns: 70px minmax(0, 1fr) 48px;
     gap: 6px;
     align-items: center;
     font-size: 0.78em;
@@ -149,6 +181,7 @@ body {
 }
 
 .command-key-button {
+    grid-column: span 2;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -160,6 +193,7 @@ body {
 }
 
 .command-row input {
+    grid-column: span 2;
     min-width: 0;
     border: 1px solid #666;
     background: #1f1f1f;
@@ -214,7 +248,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.28);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -226,12 +260,13 @@ body {
 }
 
 .game-over-content {
-    background: #2a2a2a;
+    background: rgba(42, 42, 42, 0.72);
     padding: 40px;
     border-radius: 15px;
     text-align: center;
-    border: 3px solid #ff6b35;
-    box-shadow: 0 0 30px rgba(255, 107, 53, 0.3);
+    border: 3px solid rgba(255, 107, 53, 0.72);
+    box-shadow: 0 0 30px rgba(255, 107, 53, 0.24);
+    backdrop-filter: blur(2px);
 }
 
 .game-over-content h2 {
@@ -274,12 +309,12 @@ body {
     }
     
     .player-stats {
-        flex-direction: column;
+        grid-template-columns: 1fr;
         width: 100%;
     }
 
     .command-row {
-        grid-template-columns: 64px minmax(82px, 1fr) minmax(70px, 1fr) 48px;
+        grid-template-columns: 64px minmax(0, 1fr) 48px;
     }
     
     #gameCanvas {

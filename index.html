@@ -31,6 +31,22 @@
                     <button class="edit-commands-button" type="button" data-player="2">Edit commands</button>
                     <div class="command-editor hidden" id="p2-command-editor" data-player="2"></div>
                 </div>
+                <div class="player-3-stats optional-player disabled" id="player3Panel">
+                    <div class="optional-player-header">
+                        <h3>Player 3</h3>
+                        <label class="player-toggle">
+                            <input id="enablePlayer3" type="checkbox">
+                            Enable
+                        </label>
+                    </div>
+                    <div class="stats">
+                        <span>Bombs: <span id="p3-bombs">1</span></span>
+                        <span>Power: <span id="p3-power">1</span></span>
+                    </div>
+                    <div class="controls" id="p3-controls">TFGH + R (bomb) + Y (detonate)</div>
+                    <button class="edit-commands-button" type="button" data-player="3">Edit commands</button>
+                    <div class="command-editor hidden" id="p3-command-editor" data-player="3"></div>
+                </div>
             </div>
         </div>
         
@@ -45,7 +61,7 @@
         <div class="game-over-content">
             <h2 id="gameOverTitle">Game Over</h2>
             <p id="gameOverMessage">Player 1 Wins!</p>
-            <button id="restartButton">Play Again</button>
+            <button id="restartButton">Dismiss & Reset</button>
         </div>
     </div>
 

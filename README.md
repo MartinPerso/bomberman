@@ -8,6 +8,7 @@ A faithful HTML5 port of the classic C++ SDL Bomberman game.
 2. **Controls**:
    - **Player 1**: WASD to move, Left Shift to place bombs, Left Ctrl to detonate (if you have detonator)
    - **Player 2**: Arrow keys to move, O to place bombs, P to detonate (if you have detonator)
+   - **Player 3**: Optional, disabled by default. TFGH to move, R to place bombs, Y to detonate (if you have detonator)
 
 ## Objective
 
@@ -82,3 +83,7 @@ This HTML version maintains the exact same:
 - Animation timing and sprite frames
 
 Enjoy the game!
+
+## Asset Credits
+
+- Player 3 purple character: adapted from [Bomb Party - the complete set](https://opengameart.org/content/bomb-party-the-complete-set), licensed CC-BY 3.0. Attribution: Original Bomb Party sprite sheet by Matt Hackett of Lost Decade Games, expanded by Cem Kalyoncu and /usr/share.

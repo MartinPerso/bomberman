@@ -40,9 +40,14 @@ class Game {
         this.p1PowerEl = document.getElementById('p1-power');
         this.p2BombsEl = document.getElementById('p2-bombs');
         this.p2PowerEl = document.getElementById('p2-power');
+        this.p3BombsEl = document.getElementById('p3-bombs');
+        this.p3PowerEl = document.getElementById('p3-power');
+        this.player3Toggle = document.getElementById('enablePlayer3');
+        this.player3Panel = document.getElementById('player3Panel');
         this.controlLabels = {
             1: document.getElementById('p1-controls'),
-            2: document.getElementById('p2-controls')
+            2: document.getElementById('p2-controls'),
+            3: document.getElementById('p3-controls')
         };
         
         this.initializeEventListeners();
@@ -56,6 +61,9 @@ class Game {
     initializeEventListeners() {
         // Restart button
         this.restartButton.addEventListener('click', () => this.restart());
+        this.player3Toggle.addEventListener('change', () => {
+            this.player3Panel.classList.toggle('disabled', !this.player3Toggle.checked);
+        });
         
         // Debug mode
         this.debugMode = false;
@@ -64,7 +72,7 @@ class Game {
         
         // Global key listeners for game control
         document.addEventListener('keydown', (e) => {
-            if (ControlConfig.isEditorEvent(e) || ControlConfig.activeCapture) return;
+            if (ControlConfig.isEditorEvent(e) || ControlConfig.isToggleActivationEvent(e) || ControlConfig.activeCapture) return;
 
             const key = e.key.toLowerCase();
 
@@ -246,17 +254,19 @@ class Game {
     startGame() {
         // Initialize map
         this.map = new GameMap(this.MAP_WIDTH, this.MAP_HEIGHT);
-        this.map.generate(this.debugMode);
+        const enabledPlayerTypes = this.getEnabledPlayerTypes();
+        this.map.generate(this.debugMode, enabledPlayerTypes);
         
         // Initialize players
-        this.players = [
-            new Player(1, 36, 32),  // Player 1 starting position
-            new Player(2, 486, 352) // Player 2 starting position
-        ];
+        this.players = enabledPlayerTypes.map((playerType) => {
+            const startPosition = this.getPlayerStartPosition(playerType);
+            return new Player(playerType, startPosition.x, startPosition.y);
+        });
         
         // Set game state
         this.gameState = 'playing';
         this.gameStatusEl.textContent = 'Game in progress';
+        this.player3Toggle.disabled = true;
         this.hideGameOverScreen();
         
         // Start game loop if not already running
@@ -267,6 +277,18 @@ class Game {
         }
         
         console.log('Game started');
+    }
+
+    getEnabledPlayerTypes() {
+        return this.player3Toggle.checked ? [1, 2, 3] : [1, 2];
+    }
+
+    getPlayerStartPosition(playerType) {
+        return {
+            1: { x: 36, y: 32 },
+            2: { x: 486, y: 352 },
+            3: { x: 486, y: 32 }
+        }[playerType];
     }
 
     /**
@@ -434,6 +456,16 @@ class Game {
         for (const player of this.players) {
             this.renderer.renderBombs(player.bombs);
         }
+
+        // On the paused win frame, keep defeated players visible under the flames
+        // so the hit that ended the round remains readable.
+        if (this.gameState === 'gameOver') {
+            for (const player of this.players) {
+                if (!player.alive) {
+                    this.renderer.renderPlayer(player);
+                }
+            }
+        }
         
         // Render flames for all players
         for (const player of this.players) {
@@ -457,11 +489,18 @@ class Game {
      * Update player statistics display
      */
     updatePlayerStats() {
-        if (this.players.length >= 2) {
-            this.p1BombsEl.textContent = this.players[0].bombDisp;
-            this.p1PowerEl.textContent = this.players[0].power;
-            this.p2BombsEl.textContent = this.players[1].bombDisp;
-            this.p2PowerEl.textContent = this.players[1].power;
+        const statElements = {
+            1: { bombs: this.p1BombsEl, power: this.p1PowerEl },
+            2: { bombs: this.p2BombsEl, power: this.p2PowerEl },
+            3: { bombs: this.p3BombsEl, power: this.p3PowerEl }
+        };
+
+        for (const player of this.players) {
+            const elements = statElements[player.type];
+            if (!elements) continue;
+
+            elements.bombs.textContent = player.bombDisp;
+            elements.power.textContent = player.power;
         }
     }
 
@@ -474,13 +513,14 @@ class Game {
         
         if (winner) {
             this.gameOverTitle.textContent = `Player ${winner.type} Wins!`;
-            this.gameOverMessage.textContent = `Congratulations Player ${winner.type}!`;
+            this.gameOverMessage.textContent = `Round paused. Dismiss to reset.`;
         } else {
             this.gameOverTitle.textContent = 'Game Over';
-            this.gameOverMessage.textContent = 'It\'s a tie!';
+            this.gameOverMessage.textContent = 'Tie round paused. Dismiss to reset.';
         }
         
-        this.gameStatusEl.textContent = 'Game Over';
+        this.gameStatusEl.textContent = winner ? `Player ${winner.type} wins` : 'Tie game';
+        this.player3Toggle.disabled = false;
         this.showGameOverScreen();
         
         // Add delay like original (1.5 seconds)

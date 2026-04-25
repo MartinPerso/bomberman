@@ -174,7 +174,11 @@ class Renderer {
      */
     renderPlayerFallback(player) {
         const sprite = player.getCurrentSprite();
-        const color = sprite.type === 1 ? '#4a90e2' : '#e24a4a';
+        const color = {
+            1: '#4a90e2',
+            2: '#e24a4a',
+            3: '#57c776'
+        }[sprite.type] || '#ffffff';
         
         this.ctx.fillStyle = color;
         this.ctx.fillRect(sprite.x, sprite.y, 18, 33);
@@ -354,7 +358,11 @@ class Renderer {
         for (const player of players) {
             if (!player.alive) continue;
             
-            this.ctx.strokeStyle = player.type === 1 ? '#4a90e2' : '#e24a4a';
+            this.ctx.strokeStyle = {
+                1: '#4a90e2',
+                2: '#e24a4a',
+                3: '#57c776'
+            }[player.type] || '#ffffff';
             this.ctx.lineWidth = 2;
             this.ctx.strokeRect(
                 player.x, 

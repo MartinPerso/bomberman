@@ -22,7 +22,7 @@ class GameMap {
     /**
      * Generate map using the exact algorithm from main.cpp lines 98-127
      */
-    generate(debugMode = false) {
+    generate(debugMode = false, enabledPlayerTypes = [1, 2]) {
         // Generate bonus distribution (matching original algorithm or debug mode)
         const bonusVector = this.generateBonusDistribution(debugMode);
         let bonusIndex = 0;
@@ -41,7 +41,7 @@ class GameMap {
                 // Check if position should have a box (matching original condition)
                 if (row % 2 === 1 || col % 2 === 1) {
                     // Check for safe zones (matching original conditions)
-                    if ((row <= 2 && col <= 2) || (row >= 10 && col >= 14)) {
+                    if (this.isSpawnSafeZone(row, col, enabledPlayerTypes)) {
                         // Safe zone - create empty square
                         this.tiles[row][col] = new Square(row, col);
                     } else {
@@ -56,6 +56,13 @@ class GameMap {
                 }
             }
         }
+    }
+
+    isSpawnSafeZone(row, col, enabledPlayerTypes) {
+        const enabledPlayers = new Set(enabledPlayerTypes.map(Number));
+        return (enabledPlayers.has(1) && row <= 2 && col <= 2) ||
+            (enabledPlayers.has(2) && row >= 10 && col >= 14) ||
+            (enabledPlayers.has(3) && row <= 2 && col >= 14);
     }
 
     /**

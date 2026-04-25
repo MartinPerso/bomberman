@@ -28,6 +28,14 @@ const ControlConfig = {
             right: 'ArrowRight',
             bomb: 'KeyO',
             detonate: 'KeyP'
+        },
+        3: {
+            up: 'KeyT',
+            down: 'KeyG',
+            left: 'KeyF',
+            right: 'KeyH',
+            bomb: 'KeyR',
+            detonate: 'KeyY'
         }
     },
     bindings: null,
@@ -118,6 +126,12 @@ const ControlConfig = {
             !!event.target.closest('.command-editor, .edit-commands-button');
     },
 
+    isToggleActivationEvent(event) {
+        return event.target instanceof Element &&
+            !!event.target.closest('.player-toggle') &&
+            (event.code === 'Space' || event.code === 'Enter');
+    },
+
     formatKeyCode(keyCode) {
         const labels = {
             ArrowUp: 'Arrow Up',
@@ -145,7 +159,11 @@ const ControlConfig = {
         const playerNumber = Number(playerType);
         let movement;
         if (this.isDefaultPlayer(playerType)) {
-            movement = playerNumber === 1 ? 'WASD' : 'Arrows';
+            movement = {
+                1: 'WASD',
+                2: 'Arrows',
+                3: 'TFGH'
+            }[playerNumber];
         } else {
             movement = ['up', 'down', 'left', 'right']
                 .map((actionId) => this.formatKeyCode(this.getBinding(playerType, actionId)))

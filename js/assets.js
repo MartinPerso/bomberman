@@ -60,6 +60,29 @@ class AssetLoader {
                 right3: { x: 51, y: 0, w: 19, h: 33 },
                 right4: { x: 51 + 18*2, y: 0, w: 18, h: 33 }
             },
+
+            // Player 3 uses the purple Bomb Party character frames.
+            player3: {
+                up1: { x: 0, y: 0, w: 32, h: 32 },
+                up2: { x: 32, y: 0, w: 32, h: 32 },
+                up3: { x: 64, y: 0, w: 32, h: 32 },
+                up4: { x: 96, y: 0, w: 32, h: 32 },
+
+                down1: { x: 0, y: 32, w: 32, h: 32 },
+                down2: { x: 32, y: 32, w: 32, h: 32 },
+                down3: { x: 64, y: 32, w: 32, h: 32 },
+                down4: { x: 96, y: 32, w: 32, h: 32 },
+
+                left1: { x: 0, y: 64, w: 32, h: 32 },
+                left2: { x: 32, y: 64, w: 32, h: 32 },
+                left3: { x: 64, y: 64, w: 32, h: 32 },
+                left4: { x: 96, y: 64, w: 32, h: 32 },
+
+                right1: { x: 0, y: 96, w: 32, h: 32 },
+                right2: { x: 32, y: 96, w: 32, h: 32 },
+                right3: { x: 64, y: 96, w: 32, h: 32 },
+                right4: { x: 96, y: 96, w: 32, h: 32 }
+            },
             
             // Bomb sprites (from Bomb.cpp)
             bomb: {
@@ -171,6 +194,7 @@ class AssetLoader {
             { name: 'background', path: 'assets/Background.png' },
             { name: 'player1', path: 'assets/player1.png' },
             { name: 'player2', path: 'assets/player2.png' },
+            { name: 'player3', path: 'assets/player3.png' },
             { name: 'bomb', path: 'assets/bomb.png' },
             { name: 'flames', path: 'assets/Flames.png' },
             { name: 'wall', path: 'assets/wall.png' },
@@ -213,7 +237,7 @@ class AssetLoader {
      * @returns {boolean}
      */
     isAllLoaded() {
-        return this.assets.size >= 9; // We expect 9 main assets
+        return this.assets.size >= 10; // We expect 10 main assets
     }
 }
 

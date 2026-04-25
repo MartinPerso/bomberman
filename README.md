@@ -8,9 +8,6 @@ A faithful HTML5 port of the classic C++ SDL Bomberman game.
 2. **Controls**:
    - **Player 1**: WASD to move, Left Shift to place bombs, Left Ctrl to detonate (if you have detonator)
    - **Player 2**: Arrow keys to move, O to place bombs, P to detonate (if you have detonator)
-3. **Game Controls**:
-   - **M**: Pause/Resume game
-   - **R**: Restart game (when game over)
 
 ## Objective
 
@@ -26,7 +23,7 @@ A faithful HTML5 port of the classic C++ SDL Bomberman game.
 - Same map generation algorithm with random bonus distribution
 - Identical player movement, collision detection, and bomb timing
 - Original sprite assets converted to web-compatible format
-- Quality-of-life improvements: pause, restart, clear UI
+- Quality-of-life improvements: clear UI
 
 ## Technical Details
 

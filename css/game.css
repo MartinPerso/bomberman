@@ -207,14 +207,6 @@ body {
     font-weight: bold;
 }
 
-.game-controls {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    color: #aaa;
-    font-size: 0.9em;
-}
-
 /* Game Over Screen */
 .game-over {
     position: fixed;
@@ -295,8 +287,4 @@ body {
         height: auto;
     }
     
-    .game-controls {
-        flex-direction: column;
-        gap: 10px;
-    }
 }

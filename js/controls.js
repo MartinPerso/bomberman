@@ -102,7 +102,7 @@ const ControlConfig = {
     },
 
     getPreventedKeyCodes() {
-        const keyCodes = ['KeyM', 'KeyR'];
+        const keyCodes = [];
         for (const playerBindings of Object.values(this.bindings || this.defaults)) {
             keyCodes.push(...Object.values(playerBindings));
         }

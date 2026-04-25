@@ -77,23 +77,9 @@ class Game {
                 }
             }
 
-            switch(key) {
-                case 'r':
-                    this.restart();
-                    break;
-                case 'm':
-                    if (this.gameState === 'playing') {
-                        this.pause();
-                    } else if (this.gameState === 'paused') {
-                        this.resume();
-                    }
-                    break;
-                default:
-                    // Start game on any key if in menu state
-                    if (this.gameState === 'menu') {
-                        this.startGame();
-                    }
-                    break;
+            // Start game on any key if in menu state.
+            if (this.gameState === 'menu') {
+                this.startGame();
             }
         });
     }
@@ -494,34 +480,13 @@ class Game {
             this.gameOverMessage.textContent = 'It\'s a tie!';
         }
         
-        this.gameStatusEl.textContent = 'Game Over - Press R to restart';
+        this.gameStatusEl.textContent = 'Game Over';
         this.showGameOverScreen();
         
         // Add delay like original (1.5 seconds)
         setTimeout(() => {
             console.log('Game ended');
         }, 1500);
-    }
-
-    /**
-     * Pause the game
-     */
-    pause() {
-        if (this.gameState === 'playing') {
-            this.gameState = 'paused';
-            this.gameStatusEl.textContent = 'Game Paused - Press M to resume';
-        }
-    }
-
-    /**
-     * Resume the game
-     */
-    resume() {
-        if (this.gameState === 'paused') {
-            this.gameState = 'playing';
-            this.gameStatusEl.textContent = 'Game in progress';
-            this.lastTime = performance.now(); // Reset timing
-        }
     }
 
     /**
